@@ -10,7 +10,10 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export function getDb() {
   if (!_db) {
     try {
-      const dbPath = path.resolve(process.cwd(), "data.db");
+      // Use /data mount path for persistent storage on Render
+      const dbPath = process.env.NODE_ENV === 'production' 
+        ? '/data/data.db' 
+        : path.resolve(process.cwd(), "data.db");
       const sqlite = new Database(dbPath);
       _db = drizzle(sqlite);
       
